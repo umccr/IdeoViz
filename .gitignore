@@ -1,5 +1,5 @@
 # Don't need to track html files
-*html
+*.html
 
 # History files
 .Rhistory
