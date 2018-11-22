@@ -22,7 +22,7 @@ require(IdeoViz)
 require(RColorBrewer)
 ```
 
-```{r}
+```{r plot1}
 data(binned_multiSeries)
 ideo <- getIdeo("hg18")
 head(ideo)
@@ -31,24 +31,55 @@ plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
            values_GR=binned_multiSeries, # data goes here
            value_cols=1, # col to plot
            col=brewer.pal(n=5, 'Spectral'), # colours
-           val_range=c(0,3),
+           # val_range=c(0,3),
            plotType = 'rect', # set y-axis range
            ylab="array intensities",
            plot_title="Trendline example")
+
+plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
+           ideoTable=ideo, # ideogram name
+           values_GR=binned_multiSeries, # data goes here
+           value_cols=2, # col to plot
+           col=brewer.pal(n=5, 'Spectral'), # colours
+           # val_range=c(0,3),
+           plotType = 'rect', # set y-axis range
+           ylab="array intensities",
+           plot_title="Trendline example")
+
+binned_multiSeries$group1 <- 2
+binned_multiSeries$group2 <- rep(3, 461)
+
 ```
 
 
 
-```{r cars}
-summary(cars)
+
+```{r test data}
+require(IdeoViz)
+require(RColorBrewer)
+data(binned_multiSeries)
+ideo <- getIdeo("hg18")
+head(ideo)
+#Creating a GRanges object with sample IRanges object as range, a character vector for strand information, and another chracter vector for the sequence name 
+
+seqnames = rep("chrY", 10000) #character vector 
+strand = rep("+", 10000) #positive strands
+ranges = IRanges(start = 1:10000, width = 500) #creating IRange sequences with 10,000 entries
+
+#now creating GRanges object called test with the created seqnames, strand, and ranges parameters as before
+
+test = GRanges(seqnames = seqnames, ranges = ranges, strand = strand)
+#create a column called group with constant values to plot
+test$group = 2
+
+#now plot
+plotOnIdeo(chrom=seqlevels(test), # which chrom to plot?
+           ideoTable=ideo, # ideogram name
+           values_GR=binned_multiSeries, # data goes here
+           value_cols=1, # col to plot
+           col=brewer.pal(n=5, 'Spectral'), # colours
+           plotType = 'rect', # set y-axis range
+           ylab="array intensities",
+           plot_title="test example")
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
