@@ -69,10 +69,4 @@ summary(cars)
 ##  Max.   :25.0   Max.   :120.00
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-![](report_files/figure-html/pressure-1.png)<!-- -->
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
