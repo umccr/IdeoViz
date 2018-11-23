@@ -95,6 +95,20 @@ testdata
 testdata$strand <- sub("f", "+", testdata$strand)
 testdata
 
+seqnames = c(testdata$chromosome)
+seqnames
+strand = c(testdata$strand)
+strand
+start = c(testdata$start)
+start
+end = c(testdata$end)
+end
+
+ranges = IRanges(start = start, end = end)
+ranges
+
+testRanges = GRanges(seqnames = seqnames, ranges = ranges, strand = strand)
+testRanges
 
 ```
 
