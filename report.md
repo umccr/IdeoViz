@@ -44,35 +44,71 @@ plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
            values_GR=binned_multiSeries, # data goes here
            value_cols=1, # col to plot
            col=brewer.pal(n=5, 'Spectral'), # colours
-           val_range=c(0,3),
+           # val_range=c(0,3),
            plotType = 'rect', # set y-axis range
            ylab="array intensities",
            plot_title="Trendline example")
 ```
 
-![](report_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](report_files/figure-html/plot1-1.png)<!-- -->
 
+```r
+plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
+           ideoTable=ideo, # ideogram name
+           values_GR=binned_multiSeries, # data goes here
+           value_cols=2, # col to plot
+           col=brewer.pal(n=5, 'Spectral'), # colours
+           # val_range=c(0,3),
+           plotType = 'rect', # set y-axis range
+           ylab="array intensities",
+           plot_title="Trendline example")
+```
 
+![](report_files/figure-html/plot1-2.png)<!-- -->
 
 
 ```r
-summary(cars)
+data(binned_singleSeries)
+data(hg18_ideo)
+plotOnIdeo(chrom = seqlevels(binned_singleSeries),
+ideo = hg18_ideo,
+values_GR = binned_singleSeries,
+value_cols = colnames(mcols(binned_singleSeries)),
+plotType = 'rect',
+col = 'pink',
+vertical = T,
+val_range = c(-1,1), ylab = "dummy score",
+plot_title ="Discretized example")
 ```
 
 ```
-##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
+## Plot chromosome done
 ```
 
-## Including Plots
+```
+## Plot chromosome done
+```
 
-You can also embed plots, for example:
+```
+## Plot chromosome done
+```
 
-![](report_files/figure-html/pressure-1.png)<!-- -->
+![](report_files/figure-html/plot 2-1.png)<!-- -->
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```r
+data("binned_fullGenome")
+plotOnIdeo(chrom = seqlevels(binned_fullGenome),
+           ideo = ideo,
+           values_GR = binned_fullGenome,
+           value_cols = colnames(mcols(binned_fullGenome)),
+           plotType = 'rect',
+           col = 'orange', addScale = F,
+           plot_title = "Whole genome view",
+           val_range = c(-1,1),
+           cex.axis = 0.5,
+           chromName_cex = 0.6)
+```
+
+![](report_files/figure-html/Whole genome view-1.png)<!-- -->
+
