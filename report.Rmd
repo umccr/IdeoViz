@@ -55,7 +55,7 @@ binned_multiSeries$group2 <- rep(3, 461)
 
 
 
-```{r test data}
+```{r test_data}
 require(IdeoViz)
 require(RColorBrewer)
 data(binned_multiSeries)

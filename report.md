@@ -85,6 +85,7 @@ plot_title ="Discretized example")
 ## Plot chromosome done
 ```
 
+<<<<<<< HEAD
 ```
 ## Plot chromosome done
 ```
@@ -112,3 +113,6 @@ plotOnIdeo(chrom = seqlevels(binned_fullGenome),
 
 ![](report_files/figure-html/Whole genome view-1.png)<!-- -->
 
+=======
+
+>>>>>>> 25fb1dc0ca49f8e43c071d6904bc9488c8685764
