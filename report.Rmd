@@ -20,6 +20,7 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r, message=FALSE}
 require(IdeoViz)
 require(RColorBrewer)
+require(tidyr) #tidyr package, had to go back to terminal to install lol
 ```
 
 ```{r plot1}
@@ -81,5 +82,19 @@ plotOnIdeo(chrom=seqlevels(test), # which chrom to plot?
            plotType = 'rect', # set y-axis range
            ylab="array intensities",
            plot_title="test example")
+```
+
+
+```{r}
+testdata <- read.table("data/hg38_igv_manual_by_side.bed", col.names = c("Chromosome_and_strand", "start", "end"), stringsAsFactors = FALSE) #reading in our data
+testdata$Chromosome_and_strand
+testdata[, 1]
+testdata = separate(testdata, 1, into = c("chromosome", "strand"), sep="_", remove = TRUE) #using tidyverse's function "separate" to separate the chromosome name and strand data
+testdata$strand <- sub("r", "-", testdata$strand) #replacing the r with "-"s for use as strand data
+testdata
+testdata$strand <- sub("f", "+", testdata$strand)
+testdata
+
+
 ```
 
