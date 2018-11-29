@@ -63,16 +63,19 @@ testdata <- read.table("data/hg38_igv_manual_by_side.bed", col.names = c("Chromo
 
 #step 2: filtering out the data with values greater than 0 to plot
 testdata = filter(testdata, start >0, end>0) 
-# testdata <- filter(testdata, chromosome %in% paste0("chr", 1:3))
 
 #separating the chromosome and strands into different columns
 testdata = separate(testdata, 1, into = c("chromosome", "strand"), sep="_", remove = TRUE) #using tidyverse's function 
-
+testdata
 #replacing the r with "-"s for use as strand data
 testdata$strand <- sub("r", "-", testdata$strand) 
 testdata
 testdata$strand <- sub("f", "+", testdata$strand)
 testdata 
+
+#subsetting the testRanges object into 3 chromosomes to prevent overload on the plotting function
+testdata = filter(testdata, chromosome == "chr10" | chromosome == "chrX" | chromosome == "chrY")
+testdata
 
 #retrieving required parameters for IRanges and GRanges objects
 seq_names = c(testdata$chromosome)
@@ -91,21 +94,18 @@ testRanges
 #setting the metadata group column to an arbitrary number to plot
 testRanges$group = 2
 
-#subsetting the testRanges object into 3 chromosomes to prevent overload on the plotting function
-fiveRanges = testRanges[1:5]
-fiveRanges
-
 #plotting
 dev.off()
-plotOnIdeo(chrom=seqlevels(fiveRanges), # which chrom to plot?
+plotOnIdeo(chrom=seqlevels(testRanges), # which chrom to plot?
              ideoTable=ideo, # ideogram name
-             values_GR=fiveRanges, # data goes here
+             values_GR=testRanges, # data goes here
              value_cols=1,
-             val_range = c(0,2),# col to plot
-             col=brewer.pal(n=5, 'Spectral'), # colours
-             plotType = 'rect', # set y-axis range
+             val_range = c(0,2),
+             col=brewer.pal(n=5, 'Spectral'), 
+             plotType = 'rect', 
              ylab="array intensities",
-             plot_title="test example")
+             plot_title="test example",
+             ) 
 
 
 ``` 
