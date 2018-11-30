@@ -28,6 +28,8 @@ require(dplyr)
 data(binned_multiSeries)
 ideo <- getIdeo("hg38")
 head(ideo)
+binned_multiSeries$group1 <- -1
+
 plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
            ideoTable=ideo, # ideogram name
            values_GR=binned_multiSeries, # data goes here
@@ -109,3 +111,27 @@ plotOnIdeo(chrom=seqlevels(testRanges), # which chrom to plot?
 
 
 ``` 
+
+
+```{r}
+
+#Here, I make an attempt to subset the default binned_multiSeries object to just chorosome X.Then I set the group 1 value to 1, and attempt to plot it. 
+
+grX <- binned_multiSeries[seqnames(binned_multiSeries) == "chrX"]
+
+grX$group1 = -1 
+grX
+
+plotOnIdeo(chrom=seqlevels(grX), # which chrom to plot?
+           ideoTable=ideo, # ideogram name
+           values_GR=grX, # data goes here
+           value_cols=1, # col to plot
+           col=brewer.pal(n=5, 'Spectral'), # colours
+           # val_range=c(0,3),
+           plotType = 'rect', # set y-axis range
+           ylab="array intensities",
+           plot_title="Trendline example")
+
+
+```
+
