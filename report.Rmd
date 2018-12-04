@@ -11,11 +11,12 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+```{r packageTools}
+library(Gviz)
+library(GenomicRanges)
+data(geneModels)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```
 
 ```{r, message=FALSE}
 require(IdeoViz)
@@ -24,49 +25,17 @@ require(tidyr) #tidyr package, had to go back to terminal to install lol
 require(dplyr)
 ```
 
-```{r plot1}
-data(binned_multiSeries)
-ideo <- getIdeo("hg38")
-head(ideo)
-binned_multiSeries$group1 <- -1
-
-plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
-           ideoTable=ideo, # ideogram name
-           values_GR=binned_multiSeries, # data goes here
-           value_cols=1, # col to plot
-           col=brewer.pal(n=5, 'Spectral'), # colours
-           # val_range=c(0,3),
-           plotType = 'rect', # set y-axis range
-           ylab="array intensities",
-           plot_title="Trendline example")
-
-plotOnIdeo(chrom=seqlevels(binned_multiSeries), # which chrom to plot?
-           ideoTable=ideo, # ideogram name
-           values_GR=binned_multiSeries, # data goes here
-           value_cols=2, # col to plot
-           col=brewer.pal(n=5, 'Spectral'), # colours
-           # val_range=c(0,3),
-           plotType = 'rect', # set y-axis range
-           ylab="array intensities",
-           plot_title="Trendline example")
-
-# binned_multiSeries$group1 <- 2
-# binned_multiSeries$group2 <- rep(3, 461)
-
-```
-
-
 
 
 
 ```{r}
-#step 1 is reading in the data from github
+#step 1: reading in the data from github
 testdata <- read.table("data/hg38_igv_manual_by_side.bed", col.names = c("Chromosome_and_strand", "start", "end"), stringsAsFactors = FALSE) 
 
 #step 2: filtering out the data with values greater than 0 to plot
 testdata = filter(testdata, start >0, end>0) 
 
-#separating the chromosome and strands into different columns
+#step 3: separating the chromosome and strands into different columns
 testdata = separate(testdata, 1, into = c("chromosome", "strand"), sep="_", remove = TRUE) #using tidyverse's function 
 testdata
 #replacing the r with "-"s for use as strand data
@@ -75,8 +44,12 @@ testdata
 testdata$strand <- sub("f", "+", testdata$strand)
 testdata 
 
-#subsetting the testRanges object into 3 chromosomes to prevent overload on the plotting function
-testdata = filter(testdata, chromosome == "chr10" | chromosome == "chrX" | chromosome == "chrY")
+
+
+# testdata = filter(testdata, chromosome == "chr10" | chromosome == "chrX" | chromosome == "chrY")
+#step 4: subsetting the data into 1 chrosome as test data 
+testdata = filter(testdata, chromosome == "chr10")
+
 testdata
 
 #retrieving required parameters for IRanges and GRanges objects
@@ -93,45 +66,30 @@ ranges
 testRanges = GRanges(seqnames = seq_names, ranges = ranges, strand = strand)
 testRanges
 
-#setting the metadata group column to an arbitrary number to plot
-testRanges$group = 2
+#chr is a vector of the names of all unique chrosome names used in the test GRanges object
+chr <- as.character(unique(seqnames(testRanges)))
+gen <- "hg38"
 
-#plotting
-dev.off()
-plotOnIdeo(chrom=seqlevels(testRanges), # which chrom to plot?
-             ideoTable=ideo, # ideogram name
-             values_GR=testRanges, # data goes here
-             value_cols=1,
-             val_range = c(0,2),
-             col=brewer.pal(n=5, 'Spectral'), 
-             plotType = 'rect', 
-             ylab="array intensities",
-             plot_title="test example",
-             ) 
+#creating an AnnotationTrack object to use in the plotTracks function
+atrack <- AnnotationTrack(testRanges, name = "testRange")
 
+#setting genome to hg38
+genome(atrack) <- "hg38"
 
-``` 
+#GenomeAxisCTrack() is a constructor from the of the same name (GenomeAxisTrack) that indicates the genomic coordinates 
+gtrack <- GenomeAxisTrack()
 
+#IdeoGramTrack is the idealized representaiton of a single chromosome. When plotted, these track objects will always show the whole
+chromosome, regardless of the selected genomic region.
+itrack <- IdeogramTrack(genome = gen, chromosome = chr)
 
-```{r}
+#plotting tracks of entire genome
+plotTracks(list(itrack, gtrack, atrack, gtrack))
 
-#Here, I make an attempt to subset the default binned_multiSeries object to just chorosome X.Then I set the group 1 value to 1, and attempt to plot it. 
-
-grX <- binned_multiSeries[seqnames(binned_multiSeries) == "chrX"]
-
-grX$group1 = -1 
-grX
-
-plotOnIdeo(chrom=seqlevels(grX), # which chrom to plot?
-           ideoTable=ideo, # ideogram name
-           values_GR=grX, # data goes here
-           value_cols=1, # col to plot
-           col=brewer.pal(n=5, 'Spectral'), # colours
-           # val_range=c(0,3),
-           plotType = 'rect', # set y-axis range
-           ylab="array intensities",
-           plot_title="Trendline example")
-
+#plotting track for coordinates from 10001 to 10428 using the from and to parameters
+plotTracks(list(itrack, gtrack, atrack, gtrack), from = 10001, to = 10428)
 
 ```
+
+
 
