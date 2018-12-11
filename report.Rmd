@@ -12,17 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r packageTools}
-library(Gviz)
-library(GenomicRanges)
-data(geneModels)
-
-```
-
-```{r, message=FALSE}
-require(IdeoViz)
-require(RColorBrewer)
 require(tidyr) #tidyr package, had to go back to terminal to install lol
 require(dplyr)
+library(karyoploteR)
 ```
 
 
@@ -30,66 +22,25 @@ require(dplyr)
 
 ```{r}
 #step 1: reading in the data from github
-testdata <- read.table("data/hg38_igv_manual_by_side.bed", col.names = c("Chromosome_and_strand", "start", "end"), stringsAsFactors = FALSE) 
+testdata <- read.table("https://raw.githubusercontent.com/umccr/10x/master/telomeres/data/processed/hg38_igv_manual_by_side.bed", col.names = c("Chromosome_and_strand", "start", "end"), stringsAsFactors = FALSE) 
 
-#step 2: filtering out the data with values greater than 0 to plot
-testdata = filter(testdata, start >0, end>0) 
 
-#step 3: separating the chromosome and strands into different columns
+#step 2: separating the chromosome and strands into different columns
 testdata = separate(testdata, 1, into = c("chromosome", "strand"), sep="_", remove = TRUE) #using tidyverse's function 
 testdata
 #replacing the r with "-"s for use as strand data
 testdata$strand <- sub("r", "-", testdata$strand) 
 testdata
+#replacing the r with "+"s for use as strand data
 testdata$strand <- sub("f", "+", testdata$strand)
 testdata 
 
 
+kp <- plotKaryotype()
+kpAddBaseNumbers(kp)
+kpRect(kp, chr = testdata$chromosome, x0 = testdata$start, x1= testdata$end, y0 = 0.0, y1 =0.5, col = "yellow")
 
-# testdata = filter(testdata, chromosome == "chr10" | chromosome == "chrX" | chromosome == "chrY")
-#step 4: subsetting the data into 1 chrosome as test data 
-testdata = filter(testdata, chromosome == "chr10")
-
-testdata
-
-#retrieving required parameters for IRanges and GRanges objects
-seq_names = c(testdata$chromosome)
-strand = c(testdata$strand)
-start = c(testdata$start)
-end = c(testdata$end)
-
-#creating IRanges objectn named ranges
-ranges = IRanges(start = start, end = end)
-ranges
-
-#creating GRanges object named testRanges
-testRanges = GRanges(seqnames = seq_names, ranges = ranges, strand = strand)
-testRanges
-
-#chr is a vector of the names of all unique chrosome names used in the test GRanges object
-chr <- as.character(unique(seqnames(testRanges)))
-gen <- "hg38"
-
-#creating an AnnotationTrack object to use in the plotTracks function
-atrack <- AnnotationTrack(testRanges, name = "testRange")
-
-#setting genome to hg38
-genome(atrack) <- "hg38"
-
-#GenomeAxisCTrack() is a constructor from the of the same name (GenomeAxisTrack) that indicates the genomic coordinates 
-gtrack <- GenomeAxisTrack()
-
-#IdeoGramTrack is the idealized representaiton of a single chromosome. When plotted, these track objects will always show the whole
-chromosome, regardless of the selected genomic region.
-itrack <- IdeogramTrack(genome = gen, chromosome = chr)
-
-#plotting tracks of entire genome
-plotTracks(list(itrack, gtrack, atrack, gtrack))
-
-#plotting track for coordinates from 10001 to 10428 using the from and to parameters
-plotTracks(list(itrack, gtrack, atrack, gtrack), from = 10001, to = 10428)
 
 ```
-
 
 
